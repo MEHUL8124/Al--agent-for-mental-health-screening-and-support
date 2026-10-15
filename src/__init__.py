@@ -1,0 +1,1 @@
+# MindCare AI Source Package
