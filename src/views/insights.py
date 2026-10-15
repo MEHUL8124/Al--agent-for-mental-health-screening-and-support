@@ -14,15 +14,20 @@ def render():
     
     if len(entries) < 2:
         st.markdown("""
-            <div style="text-align: center; padding: 3rem; background: #F8F9FA; border-radius: 12px; border: 1px dashed #CBD5E0;">
-                <h3 style="color: #4A5568;">Not Enough Data Points Yet</h3>
-                <p style="color: #718096; max-width: 500px; margin: 0 auto 1.5rem auto;">
+            <div class="custom-empty-card" style="text-align: center; padding: 3rem; border-radius: 12px;">
+                <h3>Not Enough Data Points Yet</h3>
+                <p style="max-width: 500px; margin: 0 auto 1.5rem auto;">
                     We need at least <strong>2 recorded daily logs</strong> to plot meaningful trends.
                     Head over to the <strong>Mood & Wellness Tracker</strong> to add entries!
                 </p>
             </div>
         """, unsafe_allow_html=True)
         return
+
+    is_dark = st.session_state.get("dark_mode", False)
+    plot_template = "plotly_dark" if is_dark else "plotly_white"
+    bg_color = "#1E293B" if is_dark else "#FFFFFF"
+    font_color = "#F8FAFC" if is_dark else "#17252A"
 
     # Convert to DataFrame and sort chronologically
     df = pd.DataFrame(entries)
@@ -38,7 +43,7 @@ def render():
         y=df["mood_score"],
         mode="lines+markers",
         name="Mood (1=Low, 5=Great)",
-        line=dict(color="#2B7A78", width=3),
+        line=dict(color="#2DD4BF" if is_dark else "#2B7A78", width=3),
         marker=dict(size=8)
     ))
     
@@ -47,7 +52,7 @@ def render():
         y=df["stress_level"],
         mode="lines+markers",
         name="Stress (1=Low, 5=High)",
-        line=dict(color="#E53E3E", width=3, dash="dot"),
+        line=dict(color="#F87171" if is_dark else "#E53E3E", width=3, dash="dot"),
         marker=dict(size=8)
     ))
     
@@ -56,7 +61,10 @@ def render():
         xaxis_title="Date / Time",
         yaxis_title="Scale (1 - 5)",
         yaxis=dict(range=[0.5, 5.5], dtick=1),
-        template="plotly_white",
+        template=plot_template,
+        paper_bgcolor=bg_color,
+        plot_bgcolor=bg_color,
+        font=dict(color=font_color),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
     st.plotly_chart(fig_trends, use_container_width=True)
@@ -82,8 +90,13 @@ def render():
                 "sleep_quality": "Sleep Quality"
             },
             title="Sleep Hours vs. Reported Mood Score",
-            template="plotly_white",
+            template=plot_template,
             color_continuous_scale="Viridis"
+        )
+        fig_scatter.update_layout(
+            paper_bgcolor=bg_color,
+            plot_bgcolor=bg_color,
+            font=dict(color=font_color)
         )
         fig_scatter.update_yaxes(range=[0.5, 5.5], dtick=1)
         st.plotly_chart(fig_scatter, use_container_width=True)
@@ -97,8 +110,13 @@ def render():
             nbins=5,
             labels={"sleep_quality": "Sleep Quality (1=Poor, 5=Restorative)"},
             title="Distribution of Sleep Quality Ratings",
-            template="plotly_white",
-            color_discrete_sequence=["#3AAFA9"]
+            template=plot_template,
+            color_discrete_sequence=["#2DD4BF" if is_dark else "#3AAFA9"]
+        )
+        fig_hist.update_layout(
+            paper_bgcolor=bg_color,
+            plot_bgcolor=bg_color,
+            font=dict(color=font_color)
         )
         fig_hist.update_xaxes(range=[0.5, 5.5], dtick=1)
         st.plotly_chart(fig_hist, use_container_width=True)

@@ -3,8 +3,15 @@ import pandas as pd
 from src import database, config
 
 def render():
-    st.markdown("""
-        <div style="background: linear-gradient(135deg, #2B7A78 0%, #17252A 100%); padding: 2.2rem; border-radius: 16px; color: white; margin-bottom: 2rem;">
+    is_dark = st.session_state.get("dark_mode", False)
+    hero_grad = (
+        "linear-gradient(135deg, #134E4A 0%, #0F172A 100%)"
+        if is_dark
+        else "linear-gradient(135deg, #2B7A78 0%, #17252A 100%)"
+    )
+    
+    st.markdown(f"""
+        <div style="background: {hero_grad}; padding: 2.2rem; border-radius: 16px; color: white; margin-bottom: 2rem; border: 1px solid {'#334155' if is_dark else 'transparent'};">
             <h1 style="color: white; margin: 0; font-size: 2.4rem;">MindCare AI</h1>
             <p style="font-size: 1.15rem; opacity: 0.9; margin: 0.5rem 0 1rem 0;">
                 <em>"Understand your patterns. Take your next step."</em>
@@ -24,40 +31,40 @@ def render():
     
     with col1:
         st.markdown("""
-            <div style="background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.2rem; min-height: 175px;">
-                <h4 style="margin: 0; color: #2B7A78;">📋 Wellness Screening</h4>
-                <p style="font-size: 0.88rem; color: #4A5568; margin-top: 0.4rem;">
+            <div class="custom-card" style="border-radius: 12px; padding: 1.2rem; min-height: 175px;">
+                <h4 style="margin: 0;">📋 Wellness Screening</h4>
+                <p style="font-size: 0.88rem; margin-top: 0.4rem;">
                     Validated PHQ-9 (mood) and GAD-7 (anxiety) structured self-reflection questionnaires with transparent scoring.
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        if st.button("Start Screening →", key="btn_nav_screen"):
+        if st.button("Start Screening →", key="btn_nav_screen", use_container_width=True):
             st.session_state["nav_selection"] = "Mental Wellness Screening"
             st.rerun()
 
     with col2:
         st.markdown("""
-            <div style="background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.2rem; min-height: 175px;">
-                <h4 style="margin: 0; color: #2B7A78;">💬 AI Support Chat</h4>
-                <p style="font-size: 0.88rem; color: #4A5568; margin-top: 0.4rem;">
+            <div class="custom-card" style="border-radius: 12px; padding: 1.2rem; min-height: 175px;">
+                <h4 style="margin: 0;">💬 AI Support Chat</h4>
+                <p style="font-size: 0.88rem; margin-top: 0.4rem;">
                     Empathetic conversation offering sensory grounding (5-4-3-2-1), paced breathing, and mindful reflection.
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        if st.button("Open Support Chat →", key="btn_nav_chat"):
+        if st.button("Open Support Chat →", key="btn_nav_chat", use_container_width=True):
             st.session_state["nav_selection"] = "AI Support Chat"
             st.rerun()
 
     with col3:
         st.markdown("""
-            <div style="background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.2rem; min-height: 175px;">
-                <h4 style="margin: 0; color: #2B7A78;">📊 Daily Tracker</h4>
-                <p style="font-size: 0.88rem; color: #4A5568; margin-top: 0.4rem;">
+            <div class="custom-card" style="border-radius: 12px; padding: 1.2rem; min-height: 175px;">
+                <h4 style="margin: 0;">📊 Daily Tracker</h4>
+                <p style="font-size: 0.88rem; margin-top: 0.4rem;">
                     Log your daily mood, stress level, sleep duration, and journal thoughts securely stored on your device.
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        if st.button("Log Today's Mood →", key="btn_nav_tracker"):
+        if st.button("Log Today's Mood →", key="btn_nav_tracker", use_container_width=True):
             st.session_state["nav_selection"] = "Mood & Wellness Tracker"
             st.rerun()
 
@@ -69,9 +76,9 @@ def render():
     
     if not entries:
         st.markdown("""
-            <div style="text-align: center; padding: 2.5rem; background: #F8F9FA; border-radius: 12px; border: 1px dashed #CBD5E0;">
-                <h4 style="color: #718096; margin-bottom: 0.5rem;">No wellness entries recorded yet</h4>
-                <p style="color: #A0AEC0; font-size: 0.95rem; margin-bottom: 1.2rem;">
+            <div class="custom-empty-card" style="text-align: center; padding: 2.5rem; border-radius: 12px;">
+                <h4 style="margin-bottom: 0.5rem;">No wellness entries recorded yet</h4>
+                <p style="font-size: 0.95rem; margin-bottom: 1.2rem;">
                     Your wellness journey starts with your first log. Take 60 seconds to record how you're feeling today!
                 </p>
             </div>

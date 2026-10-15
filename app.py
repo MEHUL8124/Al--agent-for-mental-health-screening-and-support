@@ -21,34 +21,205 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling for polished aesthetic
-st.markdown("""
-<style>
-    /* Metric Card Styling */
-    div[data-testid="stMetricValue"] {
-        font-weight: 700;
-        color: #2B7A78;
-    }
-    /* Buttons */
-    .stButton>button {
-        border-radius: 8px;
-        transition: all 0.2s ease-in-out;
-    }
-    .stButton>button:hover {
-        border-color: #2B7A78;
-        color: #2B7A78;
-    }
-    /* Clean headers */
-    h1, h2, h3 {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-</style>
-""", unsafe_allow_html=True)
+# Session state initialization for theme
+if "dark_mode" not in st.session_state:
+    st.session_state["dark_mode"] = False
+
+is_dark = st.session_state["dark_mode"]
+
+# Dynamic CSS Theme Injection
+if is_dark:
+    theme_css = """
+    <style>
+        /* Dark Theme Variables */
+        :root {
+            --bg-main: #0B1120;
+            --bg-surface: #1E293B;
+            --bg-card: #1E293B;
+            --border-color: #334155;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --accent-primary: #2DD4BF;
+            --accent-secondary: #38BDF8;
+        }
+
+        /* App Background & Base Typography */
+        .stApp {
+            background-color: #0B1120 !important;
+            color: #F8FAFC !important;
+        }
+        
+        /* Sidebar Styling */
+        section[data-testid="stSidebar"] {
+            background-color: #070D18 !important;
+            border-right: 1px solid #1E293B !important;
+        }
+        section[data-testid="stSidebar"] * {
+            color: #F8FAFC !important;
+        }
+        
+        /* Metric Cards */
+        div[data-testid="stMetricValue"] {
+            font-weight: 700;
+            color: #2DD4BF !important;
+        }
+        div[data-testid="stMetricLabel"] {
+            color: #94A3B8 !important;
+        }
+
+        /* Custom Cards & Empty States */
+        .custom-card {
+            background: #1E293B !important;
+            border: 1px solid #334155 !important;
+            color: #F8FAFC !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+        }
+        .custom-card h4 {
+            color: #2DD4BF !important;
+        }
+        .custom-card p {
+            color: #94A3B8 !important;
+        }
+        .custom-empty-card {
+            background: #141E33 !important;
+            border: 1px dashed #334155 !important;
+            color: #94A3B8 !important;
+        }
+        .custom-empty-card h3, .custom-empty-card h4 {
+            color: #E2E8F0 !important;
+        }
+
+        /* Input Controls, Selectboxes & Textareas */
+        .stTextInput>div>div>input, 
+        .stTextArea>div>div>textarea, 
+        .stSelectbox>div>div,
+        .stNumberInput>div>div>input {
+            background-color: #1E293B !important;
+            color: #F8FAFC !important;
+            border: 1px solid #334155 !important;
+        }
+        
+        /* Buttons */
+        .stButton>button {
+            background-color: #1E293B !important;
+            color: #F8FAFC !important;
+            border: 1px solid #334155 !important;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+        .stButton>button:hover {
+            border-color: #2DD4BF !important;
+            color: #2DD4BF !important;
+            box-shadow: 0 0 10px rgba(45, 212, 191, 0.2) !important;
+        }
+
+        /* Streamlit Tabs */
+        .stTabs [data-baseweb="tab-list"] {
+            background-color: #0B1120 !important;
+            border-bottom: 1px solid #1E293B !important;
+        }
+        .stTabs [data-baseweb="tab"] {
+            color: #94A3B8 !important;
+        }
+        .stTabs [aria-selected="true"] {
+            color: #2DD4BF !important;
+            border-bottom-color: #2DD4BF !important;
+        }
+        
+        /* Expanders */
+        .streamlit-expanderHeader {
+            background-color: #1E293B !important;
+            color: #F8FAFC !important;
+            border: 1px solid #334155 !important;
+        }
+        .streamlit-expanderContent {
+            background-color: #141E33 !important;
+            border: 1px solid #334155 !important;
+            border-top: none !important;
+        }
+
+        /* Dataframe styling */
+        div[data-testid="stDataFrame"] {
+            border: 1px solid #334155 !important;
+            border-radius: 8px;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            color: #F8FAFC !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        p, span, label {
+            color: #CBD5E1;
+        }
+    </style>
+    """
+else:
+    theme_css = """
+    <style>
+        /* Light Theme Styles */
+        .stApp {
+            background-color: #F8F9FD !important;
+            color: #17252A !important;
+        }
+        section[data-testid="stSidebar"] {
+            background-color: #FFFFFF !important;
+            border-right: 1px solid #E2E8F0 !important;
+        }
+        div[data-testid="stMetricValue"] {
+            font-weight: 700;
+            color: #2B7A78 !important;
+        }
+        div[data-testid="stMetricLabel"] {
+            color: #4A5568 !important;
+        }
+        .custom-card {
+            background: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            color: #17252A !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+        }
+        .custom-card h4 {
+            color: #2B7A78 !important;
+        }
+        .custom-card p {
+            color: #4A5568 !important;
+        }
+        .custom-empty-card {
+            background: #F8F9FA !important;
+            border: 1px dashed #CBD5E0 !important;
+            color: #A0AEC0 !important;
+        }
+        .custom-empty-card h3, .custom-empty-card h4 {
+            color: #4A5568 !important;
+        }
+        .stButton>button {
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+        .stButton>button:hover {
+            border-color: #2B7A78 !important;
+            color: #2B7A78 !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+    </style>
+    """
+
+st.markdown(theme_css, unsafe_allow_html=True)
 
 # Sidebar Navigation & Settings
 with st.sidebar:
     st.markdown("## 🌿 MindCare AI")
     st.caption("AI-Assisted Mental Wellness Screening & Support")
+    
+    # Dark Mode Toggle
+    dark_mode_val = st.toggle("🌙 Dark Mode", value=is_dark, key="theme_toggle")
+    if dark_mode_val != is_dark:
+        st.session_state["dark_mode"] = dark_mode_val
+        st.rerun()
+        
     st.markdown("---")
     
     # Navigation options
